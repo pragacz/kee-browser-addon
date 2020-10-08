@@ -10,7 +10,16 @@ export class PanelStubOptions {
         id: "KeeAddonPanelMatchedLogins",
         height: 300,
         width: 400,
-        name: "matchedLogins",
+        name: "matchedLoginsLegacy",
+        autoCloseTime: 0,
+        legacy: true
+    };
+
+    public static GeneratePasswordLegacy: PanelStubOptions = {
+        id: "KeeAddonPanelGeneratePassword",
+        height: 300,
+        width: 400,
+        name: "generatePasswordLegacy",
         autoCloseTime: 0,
         legacy: true
     };
@@ -21,7 +30,7 @@ export class PanelStubOptions {
         width: 400,
         name: "generatePassword",
         autoCloseTime: 0,
-        legacy: true
+        legacy: false
     };
 }
 
@@ -80,7 +89,7 @@ export class PanelStub {
         iframe.setAttribute("scrolling", "no");
 
         iframe.src =
-            browser.extension.getURL("panels/panels.html") +
+            browser.extension.getURL(`panels/panels${this.options.legacy ? "Legacy" : ""}.html`) +
             "?parentFrameId=" +
             this.parentFrameId +
             "&autoCloseTime=" +

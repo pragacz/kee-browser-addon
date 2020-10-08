@@ -161,6 +161,7 @@
             v-if="showPasswordGenerator"
             :standalone="true"
             @dialog-closed="passwordGeneratorClosed"
+            @copy-to-clipboard="copyToClipboard"
         />
     </v-app>
 </template>
@@ -176,12 +177,12 @@ import SearchInput from "./components/SearchInput.vue";
 import SearchResults from "./components/SearchResults.vue";
 import Save1stParty from "./components/Save1stParty.vue";
 import SaveWhere from "./components/SaveWhere.vue";
-import PasswordGenerator from "./components/PasswordGenerator.vue";
+import PasswordGenerator from "../common/components/PasswordGenerator.vue";
 import { Port } from "../common/port";
 import { Action } from "../common/Action";
 import { KeeLog } from "../common/Logger";
 import { SaveState } from "../common/SaveState";
-import { KeeVue } from "./KeeVue";
+import { KeeVue } from "../common/KeeVue";
 import { Entry } from "../common/model/Entry";
 import { supplementEntryState } from "./supplementEntryState";
 import { fetchFavicon, getFaviconUrl } from "./favicon";
@@ -189,6 +190,7 @@ import { autoRecoveryTimeMs, manualRecoveryPromptTimeMs, tooltipDelay } from "..
 import { SaveEntryResult } from "../common/SaveEntryResult";
 import { Field } from "../common/model/Field";
 import { Locator } from "../common/model/Locator";
+import { copyStringToClipboard } from "./copyStringToClipboard";
 
 export default {
     components: {
@@ -414,6 +416,9 @@ export default {
         },
         passwordGeneratorClosed: function (this: any) {
             this.showPasswordGenerator = false;
+        },
+        copyToClipboard: async function (this: any, payload) {
+            if (payload?.value) await copyStringToClipboard(payload.value);
         }
     }
 };

@@ -67,7 +67,6 @@ import { Port } from "../../common/port";
 import { mapGetters } from "vuex";
 import { Action } from "../../common/Action";
 import { SaveState } from "../../common/SaveState";
-import { copyStringToClipboard } from "../copyStringToClipboard";
 
 export default {
     props: ["field", "standalone"],
@@ -110,7 +109,7 @@ export default {
     methods: {
         ok: async function (this: any) {
             if (this.standalone || this.forceCopy) {
-                await copyStringToClipboard(this.generatedPassword);
+                this.$emit("copy-to-clipboard", { value: this.generatedPassword });
             }
             this.$emit("dialog-closed", { value: this.generatedPassword });
         },
