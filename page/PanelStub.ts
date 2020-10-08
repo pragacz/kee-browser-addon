@@ -4,13 +4,15 @@ export class PanelStubOptions {
     width: number;
     name: string;
     autoCloseTime: number;
+    legacy: boolean;
 
     public static MatchedLogins: PanelStubOptions = {
         id: "KeeAddonPanelMatchedLogins",
         height: 300,
         width: 400,
         name: "matchedLogins",
-        autoCloseTime: 0
+        autoCloseTime: 0,
+        legacy: true
     };
 
     public static GeneratePassword: PanelStubOptions = {
@@ -18,7 +20,8 @@ export class PanelStubOptions {
         height: 300,
         width: 400,
         name: "generatePassword",
-        autoCloseTime: 0
+        autoCloseTime: 0,
+        legacy: true
     };
 }
 
@@ -37,11 +40,15 @@ export class PanelStub {
 
     public createPanel() {
         this.container = document.createElement("div");
+        const shadow = this.container.attachShadow({ mode: "closed" });
         this.container.id = this.options.id;
-
-        this.container.style.setProperty("display", "block", "important");
-        this.container.style.setProperty("position", "absolute", "important");
-        this.container.style.setProperty("z-index", "2147483647", "important");
+        const style = document.createElement("style");
+        style.textContent = `:host(div) {
+            display: block !important;
+            position: absolute !important;
+            z-index: 2147483647 !important;
+        }`;
+        shadow.appendChild(style);
 
         if (this.target) {
             this.targetRelativeRect = this.target.getBoundingClientRect();
@@ -62,6 +69,8 @@ export class PanelStub {
         }
 
         const iframe = document.createElement("iframe");
+        iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+        iframe.setAttribute("allow", "");
         iframe.style.setProperty("width", "100%", "important");
         iframe.style.setProperty("height", "100%", "important");
         iframe.style.setProperty("border", "none", "important");
@@ -78,7 +87,7 @@ export class PanelStub {
             this.options.autoCloseTime +
             "&panel=" +
             this.options.name;
-        this.container.appendChild(iframe);
+        shadow.appendChild(iframe);
 
         const bodyElements = document.getElementsByTagName("body");
         if (bodyElements && bodyElements.length > 0) {
